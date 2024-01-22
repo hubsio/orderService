@@ -8,28 +8,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
 @RequiredArgsConstructor
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
 
-    @GetMapping
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
+    @PostMapping("/{cartId}")
+    public Order createOrder(@PathVariable Long cartId, @RequestBody Order order) {
+        return orderService.createOrder(cartId, order.getAddress(),
+                order.getFirstName(), order.getLastName(), order.getPaymentMethod(),
+                order.getDeliveryMethod());
     }
 
-    @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
+    @GetMapping("/history-orders")
+    public List<Order> getOrderHistory() {
+        return orderService.getOrderHistory();
     }
 
-    @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+    @GetMapping("/{orderId}")
+    public Order getOrderById(@PathVariable Long orderId) {
+        return orderService.getOrderById(orderId);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
+    @DeleteMapping("/delete/{orderId}")
+    public void deleteOrder(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
+    }
+
+    @PostMapping("/processing/{orderId}")
+    public Order processOrder(@PathVariable Long orderId) {
+        return orderService.processOrder(orderId);
     }
 }
